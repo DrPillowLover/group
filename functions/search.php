@@ -4,14 +4,7 @@ require "DB.php";
 global $conn;
 global $results_per_page;
 
-function getSearchResults($search)
-{
-    $sql = "SELECT * FROM `articles` WHERE `body` LIKE ? OR `title` LIKE ?";
-    global $conn;
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(["%$search%", "%$search%"]);
-    return $stmt->fetchAll();
-}
+
 function getCats()
 {
     $sql = "SELECT * FROM categories ORDER BY `id` DESC";
@@ -31,7 +24,7 @@ function getArticlesForNav()
 }
 
 
-function getArticles()
+function getSearchResults($search)
 {
     if (isset($_GET['page'])) {
         $page = $_GET['page'];
@@ -41,21 +34,29 @@ function getArticles()
 //    1/2
     global $results_per_page;
     $start_from = ($page - 1) * $results_per_page;
-    $sql = "SELECT * FROM `articles` ORDER BY `id` DESC LIMIT $start_from, $results_per_page";
+    $sql = "SELECT * FROM `articles`  WHERE `body` LIKE ? OR `title` LIKE ? ORDER BY `id` DESC LIMIT $start_from, $results_per_page";
     global $conn;
     $stmt = $conn->prepare($sql);
-    $stmt->execute();
+    $stmt->execute(["%$search%", "%$search%"]);
     return $stmt->fetchAll();
 }
 
-function numberOfPages()
+//function getSearchResults($search)
+//{
+//    $sql = "SELECT * FROM `articles` WHERE `body` LIKE ? OR `title` LIKE ?";
+//    global $conn;
+//    $stmt = $conn->prepare($sql);
+//    $stmt->execute(["%$search%", "%$search%"]);
+//    return $stmt->fetchAll();
+//}
+function numberOfPages($search)
 {
 //    2/2
     global $results_per_page;
     global $conn;
-    $sql = "SELECT * FROM `articles`";
+    $sql = "SELECT * FROM `articles`  WHERE `body` LIKE ? OR `title` LIKE ?";
     $stmt = $conn->prepare($sql);
-    $stmt->execute();
+    $stmt->execute(["%$search%", "%$search%"]);
     $numberOfRow = $stmt->rowCount();
     return ceil($numberOfRow / $results_per_page);
 }

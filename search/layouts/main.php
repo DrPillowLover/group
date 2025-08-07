@@ -15,8 +15,9 @@
                     <?php $cats = getCats(); ?>
                     <?php foreach ($cats as $cat) : ?>
                         <li class="d-flex justify-content-between align-items-center">
-                            <a href="categories/index.php?category=<?=$cat->id?>" target="_blank">
-                                <img src="assets/Img/cati/img_4.jpg" class="ml-2"/>
+<!--                            --><?php //=  http('?category='.<?=$cat->id?><!--)   ?>-->
+                            <a href="<?=http('categories/index.php?category='.$cat->id)?>" target="_blank">
+                                <img src="<?=http('assets/Img/cati/img_4.jpg')?>" class="ml-2"/>
                                 <span><?= $cat->title ?></span>
                             </a>
                             <span><?= countArticles($cat->id) ?></span>
@@ -36,7 +37,7 @@
                                 <a href="#"><img src="<?= http('images/') . $article->image ?>"/></a>
                                 <div class="m-2">
                                     <p>
-                                        <a href="single.php?id=<?= $article->id ?>"><?= $article->title ?></a>
+                                        <a href="<?=http('single.php?id='.$article->id)?>"><?= $article->title ?></a>
                                     </p>
                                     <span>
                                     <?=
@@ -56,6 +57,12 @@
 
             <div class="row">
                 <?php $results = getSearchResults($_GET['search']); ?>
+                <?php if (!$results){ ?>
+                <div class="w-100 text-center ">
+                    <p class="alert alert-danger h1 p-3">متاسفانه محتوای مدنظر شما یافت نشد</p>
+                </div>
+                <?php }else{ ?>
+
                 <?php foreach ($results as $result) : ?>
 
                     <div class="col-lg-4 col-sm-6 mb-4">
@@ -90,7 +97,7 @@
                 <div class="col-12 text-center mx-auto">
                     <ul class="pagination  justify-content-center">
 
-                        <li class="page-item"><a class="page-link" href="index.php">«</a></li>
+                        <li class="page-item"><a class="page-link" href="index.php?search=<?=$_GET['search']?>">«</a></li>
 
                         <?php
                         if (isset($_GET['page'])) {
@@ -98,7 +105,7 @@
                         } else {
                             $page = 1;
                         }
-                        $numberOfTotalPages = numberOfPages();
+                        $numberOfTotalPages = numberOfPages($_GET['search']);
                         ?>
 
 
@@ -106,21 +113,22 @@
 
                             <?php if ($i > $page + 2 || $i < $page - 2) { ?>
                                 <li class="page-item">
-                                    <a class="page-link d-none" href="index.php?page=<?= $i ?>"><?= $i ?></a>
+                                    <a class="page-link d-none" href="#"><?= $i ?></a>
                                 </li>
                             <?php } else { ?>
 
                                 <li class="page-item">
-                                    <a class="page-link" href="index.php?page=<?= $i ?>"><?= $i ?></a>
+                                    <a class="page-link" href="index.php?page=<?= $i ?>&search=<?=$_GET['search']?>"><?= $i ?></a>
                                 </li>
 
                             <?php } ?>
                         <?php endfor; ?>
                         <li class="page-item"><a class="page-link"
-                                                 href="index.php?page=<?= $numberOfTotalPages ?>">»</a></li>
+                                                 href="index.php?page=<?=$numberOfTotalPages?>&search=<?=$_GET['search']?>">»</a></li>
                     </ul>
                 </div>
             </div>
+            <?php } ?>
         </div>
     </div>
 </section>

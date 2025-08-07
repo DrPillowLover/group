@@ -1,4 +1,4 @@
-<pre>
+
 <?php
 require "../functions/DB.php";
 require "../functions/http.php";
